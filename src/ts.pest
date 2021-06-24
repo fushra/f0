@@ -1,25 +1,39 @@
 // Static types
 STRING = { "\"" ~ ASCII* ~ "\"" }
-NUMBER = { ASCII_DIGIT+ ~ ("." ~ ASCII_DIGIT+)? }
+NUMBER = @{ ASCII_DIGIT+ ~ ("." ~ ASCII_DIGIT+)? }
 WHITESPACE = _{ " " }
 
 BOOL_TRUE = { "true" }
 BOOL_FALSE = { "false" }
-BOOL = { BOOL_TRUE | BOOL_FALSE }
+BOOL = _{ BOOL_TRUE | BOOL_FALSE }
 
 NULL = { "null" }
 
 // Full file
 program = { SOI ~ NEWLINE* ~ (expression ~ (NEWLINE | ";") ~ NEWLINE*)* ~ EOI }
 
+// Assorted operators
+not_equal = { "!=" }
+double_equal = { "==" }
+triple_equal = { "===" }
+greater_than = { ">" }
+greater_than_equal = { ">=" }
+less_than = { "<" }
+less_than_equal = { "<=" }
+plus = { "+" }
+minus = { "-" }
+divide = { "/" }
+multiply = { "*" }
+inverse = { "!" }
+
 // Expression code
 expression = { WHITESPACE* ~ equality ~ WHITESPACE* }
 
-equality = { comparision ~ WHITESPACE* ~ (("!=" | "==" | "===") ~ WHITESPACE* ~ comparision)* }
-comparision = { term ~ WHITESPACE* ~ ((">" | ">=" | "<" | "<=") ~ WHITESPACE* ~ term)* }
-term = { factor ~ WHITESPACE* ~ (("-" | "+") ~ WHITESPACE* ~ factor)* }
-factor = { unary ~ WHITESPACE* ~ (("/" | "*") ~ WHITESPACE* ~ unary)* }
-unary = { (("!" | "-") ~ WHITESPACE* ~ unary) | grouping | literal }
+equality = { comparision ~ WHITESPACE* ~ ((not_equal | double_equal | triple_equal) ~ WHITESPACE* ~ comparision)* }
+comparision = { term ~ WHITESPACE* ~ ((greater_than | greater_than_equal | less_than | less_than_equal) ~ WHITESPACE* ~ term)* }
+term = { factor ~ WHITESPACE* ~ ((minus | plus) ~ WHITESPACE* ~ factor)* }
+factor = { unary ~ WHITESPACE* ~ ((divide | multiply) ~ WHITESPACE* ~ unary)* }
+unary = { ((inverse | minus) ~ WHITESPACE* ~ unary) | grouping | literal }
 grouping = { "(" ~ expression ~ ")" }
 
-literal = _{ STRING | NUMBER | BOOL | NULL }
+literal = _{ WHITESPACE* ~ (STRING | NUMBER | BOOL | NULL) ~ WHITESPACE* }
