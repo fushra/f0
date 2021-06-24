@@ -1,0 +1,25 @@
+// Static types
+STRING = { "\"" ~ ASCII* ~ "\"" }
+NUMBER = { ASCII_DIGIT+ ~ ("." ~ ASCII_DIGIT+)? }
+WHITESPACE = _{ " " }
+
+BOOL_TRUE = { "true" }
+BOOL_FALSE = { "false" }
+BOOL = { BOOL_TRUE | BOOL_FALSE }
+
+NULL = { "null" }
+
+// Full file
+program = { SOI ~ NEWLINE* ~ (expression ~ (NEWLINE | ";") ~ NEWLINE*)* ~ EOI }
+
+// Expression code
+expression = { WHITESPACE* ~ equality ~ WHITESPACE* }
+
+equality = { comparision ~ WHITESPACE* ~ (("!=" | "==" | "===") ~ WHITESPACE* ~ comparision)* }
+comparision = { term ~ WHITESPACE* ~ ((">" | ">=" | "<" | "<=") ~ WHITESPACE* ~ term)* }
+term = { factor ~ WHITESPACE* ~ (("-" | "+") ~ WHITESPACE* ~ factor)* }
+factor = { unary ~ WHITESPACE* ~ (("/" | "*") ~ WHITESPACE* ~ unary)* }
+unary = { (("!" | "-") ~ WHITESPACE* ~ unary) | grouping | literal }
+grouping = { "(" ~ expression ~ ")" }
+
+literal = _{ STRING | NUMBER | BOOL | NULL }
