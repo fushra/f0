@@ -13,27 +13,27 @@ NULL = { "null" }
 program = { SOI ~ NEWLINE* ~ (expression ~ (NEWLINE | ";") ~ NEWLINE*)* ~ EOI }
 
 // Assorted operators
-not_equal = { "!=" }
-double_equal = { "==" }
-triple_equal = { "===" }
-greater_than = { ">" }
-greater_than_equal = { ">=" }
-less_than = { "<" }
-less_than_equal = { "<=" }
-plus = { "+" }
-minus = { "-" }
-divide = { "/" }
-multiply = { "*" }
-inverse = { "!" }
+not_equal = @{ "!=" }
+double_equal = @{ "==" }
+triple_equal = @{ "===" }
+greater_than = @{ ">" }
+greater_than_equal = @{ ">=" }
+less_than = @{ "<" }
+less_than_equal = @{ "<=" }
+plus = @{ "+" }
+minus = @{ "-" }
+divide = @{ "/" }
+multiply = @{ "*" }
+inverse = @{ "!" }
 
 // Expression code
-expression = { WHITESPACE* ~ equality ~ WHITESPACE* }
+expression = { equality }
 
-equality = { comparision ~ WHITESPACE* ~ ((not_equal | double_equal | triple_equal) ~ WHITESPACE* ~ comparision)* }
-comparision = { term ~ WHITESPACE* ~ ((greater_than | greater_than_equal | less_than | less_than_equal) ~ WHITESPACE* ~ term)* }
-term = { factor ~ WHITESPACE* ~ ((minus | plus) ~ WHITESPACE* ~ factor)* }
-factor = { unary ~ WHITESPACE* ~ ((divide | multiply) ~ WHITESPACE* ~ unary)* }
-unary = { ((inverse | minus) ~ WHITESPACE* ~ unary) | grouping | literal }
+equality = { comparision ~ ((not_equal | double_equal | triple_equal) ~ comparision)* }
+comparision = { term ~ ((greater_than | greater_than_equal | less_than | less_than_equal) ~ term)* }
+term = { factor ~ ((minus | plus) ~ factor)* }
+factor = { unary ~ ((divide | multiply) ~ unary)* }
+unary = { ((inverse | minus) ~  unary) | grouping | literal }
 grouping = { "(" ~ expression ~ ")" }
 
-literal = _{ WHITESPACE* ~ (STRING | NUMBER | BOOL | NULL) ~ WHITESPACE* }
+literal = _{ (STRING | NUMBER | BOOL | NULL) }
